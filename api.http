@@ -1,0 +1,3 @@
+### Resiter
+GET http://localhost:4000/api/v1/articles?page=1&sortBy=updatedAt&search=Jeff
+Content-Type: application/json

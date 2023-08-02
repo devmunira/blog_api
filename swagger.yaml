@@ -1,0 +1,1698 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0-oas3
+  title: My First Blog API With Swagger
+  description: >
+    " This is the first professional api project I build as a assignment of
+    full-stack army. This is a simple blog api application where anyone can
+    create a new account, login to their system and create articles and post
+    their comments that will be visible publicly."
+  contact:
+    name: Munira AKter
+    email: muniraweb@gmail.com
+    url: https://munirakter.com
+servers:
+  - description: Local Server for Development
+    url: http://localhost:4000/api/v1
+  - description: Production Server
+    url: https://myblogapi.com
+tags:
+  - name: Authentication
+    description: Handle All Authentication Endpoints [Public]
+  - name: Article
+    description: All Articles Endpoints [Public & Private]
+  - name: User
+    description: Handle All user EndPoints [Public & Private]
+  - name: Category
+    description: Handle All Category EndPoints [Public & Private]
+  - name: Comment
+    description: Handle All Articles Comments [Public & Private]
+paths:
+  "/auth/login":
+    post:
+      description: This is a public route for login user with email & password
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernameOremail:
+                  type: string
+                  format: email
+                  example: muniraweb@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: Password123@
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: 200 response sent when sign In successfully completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Sign In Successfully Completed
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: >-
+                          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            format: int32
+                            example: 200
+                          name:
+                            type: string
+                            format: string
+                            example: munira
+                          email:
+                            type: string
+                            format: email
+                            example: muniraweb@gmail.com
+                          is_admin:
+                            type: boolean
+                            format: boolean
+                            example: false
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /auth/login
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  "/auth/register":
+    post:
+      description: This is a public route for register new user
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+                email:
+                  type: string
+                  format: email
+                  example: muniraweb@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: Password123@
+                status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                    - blocked
+                  example: active
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '200':
+          description: 200 response sent when sign up successfully completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Sign Up Successfully Completed
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: >-
+                          eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                      user:
+                        $ref: '#/components/schemas/User'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /auth/login
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  "/articles":
+    get:
+      description: Retrive all articles according to search params with pagination
+      tags:
+        - Article
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_by'
+        - $ref: '#/components/parameters/sort_type'
+        - $ref: '#/components/parameters/search'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/author'
+      responses:
+        '200':
+          description: Retrive all articles according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int32
+                          example: 1
+                        title:
+                          type: string
+                          example: first article
+                        body:
+                          type: string
+                          example: first article body
+                        cover:
+                          type: string
+                          format: url
+                          example: https://s3.aws.com/myfirstblog/124.jpg
+                        status:
+                          type: string
+                          example: published
+                          enum:
+                            - published
+                            - unpublished
+                            - draft
+                        author:
+                          $ref: '#/components/schemas/AuthorDTO'
+                        category:
+                          $ref: '#/components/schemas/CategoryDTO'
+                        link:
+                          type: string
+                          format: url
+                          example: /articles/1
+                      required:
+                        - id
+                        - title
+                        - author
+                        - category
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /articles/1/search?q=test&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /articles/1/search?q=test&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /articles/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      description: Create new Post [Private]
+      tags:
+        - Article
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Post Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Articles'
+      responses:
+        '201':
+          description: Article Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticlesCreateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  "/articles/{id}":
+    get:
+      description: get Single articles by id
+      tags: [Article]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+        - in: query
+          name: expand
+          description: expand relational data like category, author & comments assiociat with this article
+          schema:
+            type: string
+            format: string
+            enum: [category,author,comments]
+            example: category,author
+      responses:
+        '200':
+          description: Sucessfully get article
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    allOf:
+                      - $ref : '#/components/schemas/Articles'
+                      - type : object
+                        properties :
+                          author:
+                            $ref : '#/components/schemas/AuthorDTO'
+                      - type : object
+                        properties :
+                          category:
+                            $ref : '#/components/schemas/CategoryDTO'
+                      - type : object
+                        properties:
+                          comments:
+                            type: array
+                            items:
+                              $ref : '#/components/schemas/Comments'
+                          
+                  links:
+                    $ref: '#/components/schemas/Links'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      description: Update or Create new Post [Private]
+      tags:
+        - Article
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        description: Post Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Articles'
+      responses:
+        '201':
+          description: Article Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticlesUpdateDTO'
+        '200':
+          description: Article Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticlesUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      security:
+        - bearerAuth: []
+      description: Upadate Spacific some columns
+      tags: [Article]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int32
+                  example: 1
+                title:
+                  type: string
+                  example: First Articles
+                body:
+                  type: string
+                  format: text
+                  example: This is a description text
+                categoryId:
+                  type: integer
+                  format: int32
+                  example: 1
+                authorId:
+                  type: integer
+                  format: int32
+                  example: 1
+                cover:
+                  type: string
+                  format: url
+                  example: https://s3.aws.example.com/cover.webp
+                status:
+                  type: string
+                  enum:
+                    - published
+                    - unpublished
+                    - draft
+      responses:
+        '200':
+          description: Article Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticlesUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Articles
+      tags: [Article]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '204':
+          description: Article Deleted Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 400
+                  message:
+                    type: string
+                    format: string
+                    example: Data deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+  "/users":
+    get:
+      description: Retrive all users according to search params with pagination
+      tags:
+        - User
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_by'
+        - $ref: '#/components/parameters/sort_type'
+        - $ref: '#/components/parameters/search'
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          description: Retrive all users according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int32
+                          example: 1
+                        name:
+                          type: string
+                          example: user one
+                        email:
+                          type: string
+                          example: muniraweb@gmail.com
+                        is_admin:
+                          type: boolean
+                          example: false
+                        status:
+                          type: string
+                          example: active
+                          enum:
+                            - active
+                            - inactive
+                            - blocked
+                        link:
+                          type: string
+                          format: url
+                          example: /users/1
+                      required:
+                        - id
+                        - name
+                        - email
+                        - status
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /users/search?q=test&page=1&limit=10&status=active
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /users/2/search?q=test&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /users/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      description: Create new User [Private]
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: User Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+                email:
+                  type: string
+                  format: email
+                  example: muniraweb@gmail.com
+                is_admin:
+                  type: boolean
+                  example: false
+                status:
+                  type: string
+                  example: active
+                  enum:
+                    - active
+                    - inactive
+                    - blocked
+              required: [name,email]
+      responses:
+        '201':
+          description: User Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  "/users/{id}":
+    get:
+      description: get Single User by id
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: Sucessfully get User
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    allOf:
+                      - $ref : '#/components/schemas/User'
+                  links:
+                    $ref: '#/components/schemas/Links'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      description: Update or Create new User [Private]
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        description: Post Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+                email:
+                  type: string
+                  format: email
+                  example: muniraweb@gmail.com
+                status:
+                  type: string
+                  example: active
+                  enum:
+                    - active
+                    - inactive
+                    - blocked
+              required: [name,email]
+      responses:
+        '201':
+          description: user Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateDTO'
+        '200':
+          description: Article Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      security:
+        - bearerAuth: []
+      description: Upadate Spacific some columns
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+                email:
+                  type: string
+                  format: email
+                  example: muniraweb@gmail.com
+                status:
+                  type: string
+                  example: active
+                  enum:
+                    - active
+                    - inactive
+                    - blocked
+      responses:
+        '200':
+          description: User Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete User
+      tags: [User]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '204':
+          description: User Deleted Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 400
+                  message:
+                    type: string
+                    format: string
+                    example: Data deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+  "/categories":
+    get:
+      description: Retrive all Category according to search params with pagination
+      tags:
+        - Category
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort_by'
+        - $ref: '#/components/parameters/sort_type'
+        - $ref: '#/components/parameters/search'
+      responses:
+        '200':
+          description: Retrive all categories according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int32
+                          example: 1
+                        name:
+                          type: string
+                          example: user one
+                        
+                        link:
+                          type: string
+                          format: url
+                          example: /categoires/1
+                      required:
+                        - id
+                        - name
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        example: /categoires/search?q=test&page=1&limit=10
+                      nextPage:
+                        type: string
+                        format: url
+                        example: /categoires/2/search?q=test&page=2&limit=10
+                      prevPage:
+                        type: string
+                        format: url
+                        example: /categoires/1/search?q=test&page=1&limit=10
+                  pagination:
+                    $ref: '#/components/schemas/pagination'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      description: Create new Category [Private]
+      tags:
+        - Category
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: User Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+              required: [name]
+      responses:
+        '201':
+          description: categoires Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryCreateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  "/categories/{id}":
+    get:
+      description: get Single Category by id
+      tags: [Category]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '200':
+          description: Sucessfully get Category
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    format: string
+                    example: Success
+                  data:
+                    allOf:
+                      - $ref : '#/components/schemas/Category'
+                  links:
+                    $ref: '#/components/schemas/Links'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    put:
+      description: Update or Create new Category [Private]
+      tags:
+        - Category
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        description: Post Body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+              required: [name]
+      responses:
+        '201':
+          description: Category Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdateDTO'
+        '200':
+          description: Category Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      security:
+        - bearerAuth: []
+      description: Upadate Spacific some columns
+      tags: [Category]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  format: string
+                  example: munira
+      responses:
+        '200':
+          description: Category Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdateDTO'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Category
+      tags: [Category]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '204':
+          description: Category Deleted Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 400
+                  message:
+                    type: string
+                    format: string
+                    example: Category deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+  "/comments":
+    post:
+      description: Create new Comment [Private]
+      tags:
+        - Comment
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Comment Body
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    userId:
+                      type: integer
+                      format: int32
+                      example: 35
+                    articlesId:
+                      type: integer
+                      format: int32
+                      example: 35
+                    comment:
+                      type: string
+                      format: text
+                      example: this is a comment
+                  required: [name,email]
+                - $ref : '#/components/schemas/Timestamp'
+      responses:
+        '201':
+          description: Comment Created Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comments'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+  "/comments/{id}":
+    patch:
+      security:
+        - bearerAuth: []
+      description: Upadate Spacific some columns only own comments can be updated by user
+      tags: [Comment]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  format: text
+                  example: this is a comment
+              required: [comment]
+      responses:
+        '200':
+          description: Comment Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comments'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      security:
+        - bearerAuth: []
+      description: Delete Comment only own comments can be deleted by user
+      tags: [Comment]
+      parameters:
+        - $ref: '#/components/parameters/idPathParam'
+      responses:
+        '204':
+          description: Comment Deleted Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 400
+                  message:
+                    type: string
+                    format: string
+                    example: Data deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+        '404':
+          $ref: '#/components/responses/404'
+  
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int31
+                example: 400
+              error:
+                type: string
+                format: string
+                example: Bad Request
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      example: email
+                    message:
+                      type: string
+                      example: Invalid email
+                    in:
+                      type: string
+                      enum:
+                        - query
+                        - body
+                      example: body
+    '401':
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 401
+              error:
+                type: string
+                example: Unauthenticated
+              message:
+                type: string
+                example: You are not an authenticated user
+    '403':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 403
+              error:
+                type: string
+                example: Unauthorized
+              message:
+                type: string
+                example: You don't have the right permissions
+    '404':
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 404
+              error:
+                type: string
+                example: Not Found
+              message:
+                type: string
+                example: Requested resource not found
+    '405':
+      description: Method Not Allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 405
+              error:
+                type: string
+                example: Method Not Allowed
+              message:
+                type: string
+                example: You are hiting on a invalid method
+    '500':
+      description: 500 response send when server have any issue
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 500
+              error:
+                type: string
+                example: Internal Server Error
+              message:
+                type: string
+                example: We are sorry for the inconvenience.Please try again later
+  parameters:
+    page:
+      in: query
+      name: page
+      description: Current Page Number for handle Pagination
+      schema:
+        type: integer
+        format: int31
+        example: 2
+    category:
+      in: query
+      name: category
+      description: Get spacific category posts
+      schema:
+        type: integer
+        format: int31
+        example: 2
+    author:
+      in: query
+      name: author
+      description: Get spacific author posts
+      schema:
+        type: integer
+        format: int31
+        example: 15
+    status:
+      in: query
+      name: status
+      description: Get spacific status items
+      schema:
+        type: string
+        format: string
+        example: active
+    limit:
+      in: query
+      name: limit
+      description: Data Redered limit Number for handle Pagination
+      schema:
+        type: integer
+        format: int31
+        example: 2
+    sort_by:
+      in: query
+      name: sort_by
+      description: Data Sorting Field
+      schema:
+        type: string
+        format: string
+        example: title
+    sort_type:
+      in: query
+      name: sort_type
+      description: Data Sorting Type (asc,desc)
+      schema:
+        type: string
+        format: string
+        enum:
+          - asc
+          - desc
+        example: desc
+    search:
+      in: query
+      name: search
+      description: Data Search params
+      schema:
+        type: string
+        example: hello
+    idPathParam:
+      in: path
+      name: id
+      required: true
+      description: Article Id
+      schema:
+        type: integer
+        format: int32
+        example: 1
+  schemas:
+    Articles:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            title:
+              type: string
+              example: First Articles
+            body:
+              type: string
+              format: text
+              example: This is a description text
+            categoryId:
+              type: integer
+              format: int32
+              example: 1
+            authorId:
+              type: integer
+              format: int32
+              example: 1
+            cover:
+              type: string
+              format: url
+              example: https://s3.aws.example.com/cover.webp
+            link:
+              type: string
+              format: url
+              example: '/articles/:articlesId'
+            status:
+              type: string
+              enum:
+                - published
+                - unpublished
+                - draft
+          required:
+            - id
+            - title
+            - body
+            - categoryId
+            - authorId
+            - status
+        - $ref: '#/components/schemas/Timestamp'
+    ArticlesCreateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Post Created SuccessFully
+        data:
+          $ref: '#/components/schemas/Articles'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /articles/1
+            allPost:
+              type: string
+              format: url
+              example: /articles
+    ArticlesUpdateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201 / 200
+        message:
+          type: string
+          example: Post Updated SuccessFully
+        data:
+          $ref: '#/components/schemas/Articles'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /articles/1
+            allPost:
+              type: string
+              format: url
+              example: /articles
+    Comments:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            comment:
+              type: string
+              format: text
+              example: This is a comment text
+            userId:
+              type: integer
+              format: int32
+              example: 1
+            articleId:
+              type: integer
+              format: int32
+              example: 1
+          required:
+            - id
+            - comment
+            - userId
+            - articleId
+        - $ref: '#/components/schemas/Timestamp'
+    CommentsCreateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Comments Created SuccessFully
+        data:
+          $ref: '#/components/schemas/Comments'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /comments
+    CommentsUpdateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201 / 200
+        message:
+          type: string
+          example: Comments Upadted SuccessFully
+        data:
+          $ref: '#/components/schemas/Comments'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /comments/1
+    AuthorDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          format: string
+          example: munira
+    CategoryDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          format: string
+          example: NextJs
+    User:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            name:
+              type: string
+              format: string
+              example: munira
+            email:
+              type: string
+              format: email
+              example: muniraweb@gmail.com
+            is_admin:
+              type: boolean
+              example: false
+          required:
+            - id
+            - name
+            - email
+            - is_admin
+        - $ref: '#/components/schemas/Timestamp'
+    UserCreateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: User Created SuccessFully
+        data:
+          $ref: '#/components/schemas/User'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /users
+            allUser:
+              type: string
+              format: url
+              example: /users
+            allPostByUser:
+              type: string
+              format: url
+              example: /posts?author=1
+    UserUpdateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201 / 200
+        message:
+          type: string
+          example: User Updated SuccessFully
+        data:
+          $ref: '#/components/schemas/User'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /users
+            allUser:
+              type: string
+              format: url
+              example: /users
+            allPostByUser:
+              type: string
+              format: url
+              example: /posts?author=1
+    Timestamp:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: datetime
+        updatedAt:
+          type: string
+          format: datetime
+      required:
+        - createdAt
+        - updatedAt
+    pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          example: 2
+        limit:
+          type: integer
+          format: int32
+          example: 10
+        next:
+          type: integer
+          format: int32
+          example: 3
+        prev:
+          type: integer
+          format: int32
+          example: 1
+        totalPage:
+          type: integer
+          format: int32
+          example: 5
+        totalItems:
+          type: integer
+          format: int32
+          example: 50
+      required:
+        - page
+        - limit
+        - totalPage
+        - totalItems
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+          format: url
+          example: '/item/{id}'
+        allItems:
+          type: string
+          format: url
+          example: '/items'
+      required:
+        - createdAt
+        - updatedAt
+    Category:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            name:
+              type: string
+              format: string
+              example: nextjs
+          required:
+            - id
+            - name
+        - $ref: '#/components/schemas/Timestamp'
+    CategoryCreateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Catgeory Created SuccessFully
+        data:
+          $ref: '#/components/schemas/Category'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /categories
+            allcategories:
+              type: string
+              format: url
+              example: /categories
+            allPostBycategories:
+              type: string
+              format: url
+              example: /post?categories=1
+    CategoryUpdateDTO:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 201 / 200
+        message:
+          type: string
+          example: Category Updated SuccessFully
+        data:
+          $ref: '#/components/schemas/Category'
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              example: /categories
+            allcategories:
+              type: string
+              format: url
+              example: /categories
+            allPostBycategories:
+              type: string
+              format: url
+              example: /post?categories=1
