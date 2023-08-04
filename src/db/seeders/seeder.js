@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import User from '../models/User.js';
-import Post from '../models/Post.js';
+import User from '../../models/User.js';
+import Post from '../../models/Post.js';
 
 // Seed numOfUser User Data to User Documents
 export const userSeeder = async (numOfUser) => {

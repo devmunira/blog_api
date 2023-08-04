@@ -1,4 +1,6 @@
-import { query } from "express-validator";
+import { body, query } from "express-validator";
+import Post from "../models/Post";
+
 
 const isSortType = (val,array=['asc' ,'desc']) => {
     if(!array.includes(val)) throw new Error('Sort Type must be asc Or desc')
@@ -10,6 +12,13 @@ const isSortBy = (val,array=['updatedAt' , 'title']) => {
     return true
 }
 
+const isStatusType = (val, array=['publish' , 'unpublish' , 'draft']) => {
+    if(!array.includes(val)) throw new Error('Status must be publish , unpublish Or draft')
+    return true
+}
+
+
+// Find All Query params check
 export const getPostRequest = [
     query('page')
     .optional()
@@ -31,3 +40,43 @@ export const getPostRequest = [
     .trim()
     .custom(val => isSortBy(val)),
 ];
+
+
+// create new post query params check
+export const createPostRequest = [
+    body('title')
+    .trim()
+    .notEmpty()
+    .withMessage('title field is required!')
+    .bail()
+    .isLength({max: 50})
+    .withMessage('Tilte must not be greater than 50 chars!')
+    .bail()
+    .custom(async val => {
+        const posts = await Post.find({title : {$regx : val}}).exec()
+        if(posts.length > 0) return Promise.reject('Title must be unique!')
+        return true;
+    })
+    ,
+    body('categoryId')
+    .trim()
+    .isString()
+    .withMessage('Enter a valid category id'),
+    body('body')
+    .optional()
+    .trim()
+    .isString()
+    .withMessage('Post details must be a string type!')
+    ,
+    body('cover')
+    .optional()
+    .trim()
+    .isURL()
+    .withMessage('For Cover photo must be enter a valid file path')
+    ,
+    body('status')
+    .optional()
+    .trim()
+    .custom(val => isStatusType(val))
+
+]
