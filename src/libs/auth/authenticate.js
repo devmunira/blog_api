@@ -1,5 +1,5 @@
-import User from "../models/User.js"
-import { mailTransporter } from "../utils/mailUtils.js";
+import User from "../../models/User.js"
+import { mailTransporter } from "../../utils/mailUtils.js";
 
 // Login User with username Or password
 export const loginUser = async (usernameOremail) => {

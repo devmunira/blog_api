@@ -1,5 +1,5 @@
 import express from "express"
-import { LoginUserByUsernameOrEmail, registerUserManually } from "../controllers/AuthenticateController.js"
+import { LoginUserByUsernameOrEmail, registerUserManually } from "../api/v1/auth/AuthenticateController.js"
 import { loginRequestValidator, registerRequestValidator } from "../request/authRequestValidator.js"
 import { requestValidator } from "../middleware/requestValidator.js"
 

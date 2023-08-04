@@ -27,6 +27,18 @@ services:
       - '8081:8081'
     depends_on:
       - mongodb
+
+  # MongoDB Tools
+  mongo-tools:
+    image: mongo:latest
+    container_name: mongo-tools
+    command: ["mongodump"]  # You can change the command as per your needs
+    depends_on:
+      - mongodb
+    volumes:
+      - 'my_mongodb_data:/data/db'
+
+
 volumes:
   my_mongodb_data:
     driver: local

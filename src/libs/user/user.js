@@ -1,6 +1,6 @@
-import User from "../models/User.js";
 import bcrypt  from 'bcrypt';
 import { add, addMinutes } from "date-fns";
+import User from '../../models/User.js';
 
 
 

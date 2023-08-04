@@ -1,8 +1,8 @@
 
 import jwt from "jsonwebtoken";
-import Token from './../models/Token.js';
 import {add} from "date-fns"
 import ip from "ip"
+import Token from './../../models/Token.js';
 
 export const createToken = async (user) => {
    try {

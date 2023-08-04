@@ -1,9 +1,8 @@
-import { loginUser } from "../libs/authenticate.js";
-import { createToken } from "../libs/token.js";
-import { createUser, updateToken } from "../libs/user.js"
-import User from "../models/User.js";
-import { generateUniqueCode } from "../utils/globalUtils.js";
-import {sendEmailForEmailVerify} from "../libs/authenticate.js"
+import { createToken } from "../../../libs/auth/token.js";
+import { createUser, updateToken } from "../../../libs/user/user.js"
+import {sendEmailForEmailVerify} from "../../../libs/auth/authenticate.js"
+import { loginUser } from "../../../libs/auth/authenticate.js";
+import { generateUniqueCode } from "../../../utils/globalUtils.js";
 
 // Login User by valid Username/Email & Password
 // after successfull login user will get token and user Data
