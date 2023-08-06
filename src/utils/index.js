@@ -1,7 +1,9 @@
-import globalUtils from "./globalUtils"
-import mailUtils from "./mailUtils"
+import globalUtils from "./globalUtils.js"
+import mailUtils from "./mailUtils.js"
+import { generateCreateHateoasLinks } from './hateoasUtils.js';
 
 export {
     globalUtils,
-    mailUtils
+    mailUtils,
+    generateCreateHateoasLinks
 }

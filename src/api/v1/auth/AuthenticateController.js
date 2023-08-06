@@ -2,7 +2,7 @@ import { createToken } from "../../../libs/auth/token.js";
 import { createUser, updateToken } from "../../../libs/user/user.js"
 import {sendEmailForEmailVerify} from "../../../libs/auth/authenticate.js"
 import { loginUser } from "../../../libs/auth/authenticate.js";
-import { generateUniqueCode } from "../../../utils/globalUtils.js";
+import {globalUtils} from "../../../utils/index.js";
 
 // Login User by valid Username/Email & Password
 // after successfull login user will get token and user Data
@@ -10,7 +10,7 @@ export const LoginUserByUsernameOrEmail = async (req,res,next) => {
     try {
         const {usernameOremail} = req.body;
         const user = await loginUser(usernameOremail);
-        const {access_token, refresh_token} = await createToken(user)
+        const {access_token, refresh_token} = await createToken(user);
         res.status(200).json({
           mesaage : 'Login Completed Successfully!',
           user,
@@ -53,7 +53,7 @@ export const registerUserManually = async (req,res,next) => {
 */
 export const verifyEmailForForgotPass = async (req,res,next) => {
    try {
-      const OTP = generateUniqueCode();
+      const OTP = globalUtils.generateUniqueCode();
       const {email} = req.body
 
       const user = await updateToken(email,OTP)

@@ -1,5 +1,5 @@
 import { body, query } from "express-validator";
-import Post from "../models/Post";
+import Post from "../models/Post.js";
 
 
 const isSortType = (val,array=['asc' ,'desc']) => {
@@ -53,7 +53,7 @@ export const createPostRequest = [
     .withMessage('Tilte must not be greater than 50 chars!')
     .bail()
     .custom(async val => {
-        const posts = await Post.find({title : {$regx : val}}).exec()
+        const posts = await Post.find({title : {$regex: val, $options: 'i'}}).exec()
         if(posts.length > 0) return Promise.reject('Title must be unique!')
         return true;
     })

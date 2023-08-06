@@ -7,5 +7,5 @@ export {
    notFoundHandellar,
    globalErrorHandellar,
    middleware,
-   requestValidator
+   requestValidator,
 }

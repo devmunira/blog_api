@@ -17,6 +17,8 @@ servers:
   - description: Production Server
     url: https://myblogapi.com
 tags:
+  - name: Health
+    description: Handle API health Endpoint [Public]
   - name: Authentication
     description: Handle All Authentication Endpoints [Public]
   - name: Article
@@ -28,6 +30,26 @@ tags:
   - name: Comment
     description: Handle All Articles Comments [Public & Private]
 paths:
+  "/health":
+    get:
+      description: Checkout API health
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Retrive all articles according to search params with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int31
+                    example: 200
+                  message:
+                    type: string
+                    example: API Health is okey!
   "/auth/login":
     post:
       description: This is a public route for login user with email & password
@@ -48,7 +70,7 @@ paths:
                   format: password
                   example: Password123@
               required:
-                - email
+                - usernameOremail
                 - password
       responses:
         '200':
@@ -113,7 +135,7 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                username:
                   type: string
                   format: string
                   example: munira
@@ -133,7 +155,7 @@ paths:
                     - blocked
                   example: active
               required:
-                - name
+                - username
                 - email
                 - password
       responses:
@@ -221,10 +243,10 @@ paths:
                           example: https://s3.aws.com/myfirstblog/124.jpg
                         status:
                           type: string
-                          example: published
+                          example: publish
                           enum:
-                            - published
-                            - unpublished
+                            - publish
+                            - unpublish
                             - draft
                         author:
                           $ref: '#/components/schemas/AuthorDTO'
@@ -266,6 +288,7 @@ paths:
         - Article
       security:
         - bearerAuth: []
+        - RefreshTokenHeader: []
       requestBody:
         description: Post Body
         content:
@@ -417,8 +440,8 @@ paths:
                 status:
                   type: string
                   enum:
-                    - published
-                    - unpublished
+                    - publish
+                    - unpublish
                     - draft
       responses:
         '200':
@@ -1118,13 +1141,16 @@ paths:
           $ref: '#/components/responses/500'
         '404':
           $ref: '#/components/responses/404'
-  
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    RefreshTokenHeader:
+      type: apiKey
+      in: header
+      name: x-refresh-token
   responses:
     '400':
       description: Bad Request
@@ -1324,46 +1350,31 @@ components:
       allOf:
         - type: object
           properties:
-            id:
-              type: integer
-              format: int32
-              example: 1
             title:
               type: string
               example: First Articles
             body:
               type: string
-              format: text
               example: This is a description text
             categoryId:
-              type: integer
-              format: int32
-              example: 1
+              type: string
+              example: "64cf0027ef51f7db691c54d9"
             authorId:
-              type: integer
-              format: int32
-              example: 1
+              type: string
+              example: "64cf0027ef51f7db691c54d9"
             cover:
               type: string
               format: url
               example: https://s3.aws.example.com/cover.webp
-            link:
-              type: string
-              format: url
-              example: '/articles/:articlesId'
             status:
               type: string
               enum:
-                - published
-                - unpublished
+                - publish
+                - unpublish
                 - draft
           required:
-            - id
             - title
-            - body
             - categoryId
-            - authorId
-            - status
         - $ref: '#/components/schemas/Timestamp'
     ArticlesCreateDTO:
       type: object
@@ -1575,13 +1586,10 @@ components:
       properties:
         createdAt:
           type: string
-          format: datetime
+          format: date-time
         updatedAt:
           type: string
-          format: datetime
-      required:
-        - createdAt
-        - updatedAt
+          format: date-time
     pagination:
       type: object
       properties:

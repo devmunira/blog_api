@@ -9,6 +9,14 @@ router.use('/auth' , authRoute)
 router.use('/articles' , postRoute)
 
 
+// Checkout API Route Health
+router.get('/health' , (req,res,next) => {
+    return res.status(200).json({
+        code : 200,
+        message : 'API Health is okey!'
+    })
+})
+
 
 // export for use on index file
 export default router;

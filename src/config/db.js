@@ -4,11 +4,9 @@ dotenv.config()
 
 export const connectMongoDB = async () => {
     try {
-      console.log("Connecting to MongoDB...");
       let connectionString = process.env.MONGOOSE_STRING;
     //   connectionString = connectionString.replace('<username>', process.env.MONGO_USER);
     //   connectionString = connectionString.replace('<password>', process.env.MONGO_PASSWORD);
-      console.log("Using connection string:", connectionString);
   
       await mongoose.connect(connectionString, {
         dbName: process.env.DB_NAME,

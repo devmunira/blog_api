@@ -6,10 +6,10 @@ import Token from './../../models/Token.js';
 
 export const createToken = async (user) => {
    try {
-        const access_token = jwt.sign({...user}, process.env.JWT_PASSWORD , {
-        expiresIn : 10 * 60
+        const access_token = jwt.sign({...user , issuedIp: ip.address()}, process.env.JWT_PASSWORD , {
+        expiresIn : 1 * 24 * 60 * 60
        });
-       const refresh_token = jwt.sign({...user}, process.env.JWT_REFRESH_PASSWORD , {
+       const refresh_token = jwt.sign({...user , issuedIp: ip.address()}, process.env.JWT_REFRESH_PASSWORD , {
          expiresIn : 3 * 24 * 60 * 60
        });
 

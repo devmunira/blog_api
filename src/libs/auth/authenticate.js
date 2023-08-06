@@ -1,5 +1,5 @@
 import User from "../../models/User.js"
-import { mailTransporter } from "../../utils/mailUtils.js";
+import mailUtils from "../../utils/mailUtils.js";
 
 // Login User with username Or password
 export const loginUser = async (usernameOremail) => {
@@ -17,7 +17,7 @@ export const loginUser = async (usernameOremail) => {
 // Send Email with OTP for verify email
 export const sendEmailForEmailVerify = async (email,username,code) => {
     try {
-        const transporter = mailTransporter();
+        const transporter = mailUtils.mailTransporter();
         const mailOptions = {
             from: process.env.SMTP_USER,
             to: email,
