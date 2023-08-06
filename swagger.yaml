@@ -1283,16 +1283,14 @@ components:
       name: category
       description: Get spacific category posts
       schema:
-        type: integer
-        format: int31
+        type: string
         example: 2
     author:
       in: query
       name: author
       description: Get spacific author posts
       schema:
-        type: integer
-        format: int31
+        type: string
         example: 15
     status:
       in: query

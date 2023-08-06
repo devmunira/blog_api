@@ -31,11 +31,11 @@ export const getPostRequest = [
     query('search')
     .optional()
     .isString().notEmpty().withMessage('Search query must be a non-empty string'),
-    query('sortType')
+    query('sort_type')
     .optional()
     .trim()
     .custom(val => isSortType(val)),
-    query('sortBy')
+    query('sort_by')
     .optional()
     .trim()
     .custom(val => isSortBy(val)),
