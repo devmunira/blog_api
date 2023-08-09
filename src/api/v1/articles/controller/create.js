@@ -8,9 +8,7 @@ import  {generateCreateHateoasLinks, globalUtils}  from "./../../../../utils/ind
 const createPost = async (req,res,next) => {
     const {categoryId,title,body,cover,status} = req.body;
     try {
-        const article = await createPostService({title,body,cover,status,categoryId, authorId:req.user._id});
-
-
+        const article = await createPostService({title,body,cover,status,categoryId,authorId:req.user._id});
         res.status(201).json({
             code : 201,
             message : 'Article created successfully!',

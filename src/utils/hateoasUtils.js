@@ -1,11 +1,20 @@
 import { generateQueryString } from "./queryUtils.js"
 
 // create hateoas links generator
-export const generateCreateHateoasLinks = (baseUrl,id,slug) => {
-    return {
+export const generateCreateHateoasLinks = (baseUrl,id,slug,realtions=[]) => {
+    const links =  {
         self :    `${process.env.API_BASE_URL}${baseUrl}/${id}/${slug}`,
         allItems : `${process.env.API_BASE_URL}${baseUrl}`,
+
     }
+
+    if(Array.isArray(realtions) && realtions.length > 0){
+        realtions.forEach((item) => {
+            links(item[key]) = item.url
+        })
+    }
+
+    return links;
 }
 
 

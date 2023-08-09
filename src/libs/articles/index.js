@@ -1,3 +1,4 @@
+import e from "cors";
 import Post from "../../models/Post.js";
 import { generateSortType, globalUtils } from "../../utils/index.js";
 
@@ -35,10 +36,19 @@ export const countPostsService = (filter) => {
 
 // find all posts
 export const findAllPostService = async (
-    {search='',sortBy='updatedAt',sortType='asc',limit=10,page=1,categoryId='',author=''}
+    {search='',sortBy='updatedAt',sortType='asc',limit=10,page=1,categoryId='',author='' , select=''}
 ) => {
     // populate sortType val for query
     let sortTypeForDB = generateSortType(sortType);
+
+    // create selected item array for select specific items from db
+    let selectedArray;
+    if(select){
+        selectedArray = select.split(',').map((item) => item.trim());
+    }else{
+        selectedArray = ['title' , 'slug' , 'cover' , 'status' , 'authorId' , 'categoryId' , 'createdAt']
+    }
+
     // destructured filter options for query
     let filter = {title : {$regex : search , $options : 'i'}}
     if(categoryId) filter.categoryId = categoryId
@@ -46,14 +56,16 @@ export const findAllPostService = async (
 
     // send request to db with all query params
     let articles = await Post.find(filter)
+    .select(selectedArray)
     .sort({[sortBy] : sortTypeForDB})
     .skip(page * limit - limit)
     .limit(limit)
-    .populate({
+    .populate(selectedArray.includes('authorId') ? {
         path   : 'authorId',
         select : 'username email'
         //TODO: populate category
-    });
+    } : '');
+
 
     // count total posts based on search query params only, not apply on pagination
     let totalItems = await countPostsService(filter) ;
@@ -66,14 +78,21 @@ export const findAllPostService = async (
 }
 
 
-// populate artilces data
-export const populatePostService = (articles = [] , baseURL = '') => {
-    return articles.length > 0 && articles.map((item) => {
-        delete item._doc.__v;
-        return {
-            ...item._doc,
-            links : `${process.env.API_BASE_URL}${baseURL}/${item._id}/${item.slug}`,
-        }
-    })
+// find Article by Id
+export const findById = async ({id = '' , expand = [] , select=[]}) => {
+    if(!id) throw new Error('Invalid Id Params!')
 
+    let article = Post.findById(id);
+    if(select.length > 0) article =  await article.select(select);
+
+
+    if(article){
+        if(expand.includes('authorId')) await article.populate({path : 'authorId' , select : '-__v, -password'})
+        if(expand.includes('categoryId')) await article.populate({path : 'categoryId'})
+        if(expand.includes('comments')) await article.populate({path : 'comments'})
+    }
+    
+
+    return article ? article._doc : null;
 }
+

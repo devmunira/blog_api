@@ -206,6 +206,7 @@ paths:
         - $ref: '#/components/parameters/search'
         - $ref: '#/components/parameters/category'
         - $ref: '#/components/parameters/author'
+        - $ref: '#/components/parameters/select'
       responses:
         '200':
           description: Retrive all articles according to search params with pagination
@@ -316,13 +317,13 @@ paths:
       tags: [Article]
       parameters:
         - $ref: '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/select'
         - in: query
           name: expand
           description: expand relational data like category, author & comments assiociat with this article
           schema:
             type: string
             format: string
-            enum: [category,author,comments]
             example: category,author
       responses:
         '200':
@@ -1278,6 +1279,13 @@ components:
         type: integer
         format: int31
         example: 2
+    select:
+      in: query
+      name: select
+      description: Select specific data
+      schema:
+        type: string
+        example: author,title
     category:
       in: query
       name: category
@@ -1340,9 +1348,8 @@ components:
       required: true
       description: Article Id
       schema:
-        type: integer
-        format: int32
-        example: 1
+        type: string
+        example: '64d3832cb00305fbac40bf12'
   schemas:
     Articles:
       allOf:

@@ -19,10 +19,17 @@ const generateSlug = (title) => {
     return title.trim().toLowerCase().replace(' ' , '-');
 }
 
+// string to array converstion
+const stringToArray = (str='') => {
+    if(!str) return false;
+    return str.split(',').map((item) => item.trim())
+}
+
 export default {
     saltted,
     generateSlug,
-    generateUniqueCode
+    generateUniqueCode,
+    stringToArray
 }
 
 

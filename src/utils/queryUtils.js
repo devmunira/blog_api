@@ -23,3 +23,15 @@ export const generatePagination = (totalPage,page,totalItems,limit) => {
     if(page > 1) pagination.prev = page - 1
     return pagination;
 }
+
+
+// populate request data
+export const transformData = (items = [] , baseURL = '', selection='' , deselect='') => {
+    return items.length > 0 && items.map((item) => {
+        delete item._doc.__v;
+        return {
+            ...item._doc,
+            links : `${process.env.API_BASE_URL}${baseURL}/${item._id}/${item.slug}`,
+        }
+    })
+}
