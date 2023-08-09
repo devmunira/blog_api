@@ -70,7 +70,7 @@ export const findAllArticleService = async (
     let totalItems = await countArticlesService(filter) ;
 
     return {
-        articles,
+        articles : articles.length > 0 ? articles : [],
         totalItems
     }
 

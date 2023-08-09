@@ -20,7 +20,7 @@ export const generatePagination = (totalPage,page,totalItems,limit) => {
     // generate next page number based on totalPage
     if(page < totalPage) pagination.next = page + 1
     // generate next page number based on totalPage
-    if(page > 1) pagination.prev = page - 1
+    if(page > 1 && totalPage > 0) pagination.prev = page - 1
     return pagination;
 }
 

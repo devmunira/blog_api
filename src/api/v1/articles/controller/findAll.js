@@ -27,7 +27,7 @@ export const findAll = async (req,res,next) => {
         let result = {
             code : 200,
             message: 'Successfully data retrived!',
-            data  : transformData(articles , req.baseUrl), 
+            data  : articles.length > 0 ?  transformData(articles , req.baseUrl) : [], 
             links : generateAllDataHateoasLinks(req.baseUrl,page,totalPage,req.query),
             pagination : generatePagination(totalPage,page,totalItems,limit)
         }
