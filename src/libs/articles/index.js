@@ -1,10 +1,9 @@
-import e from "cors";
-import Post from "../../models/Post.js";
+import Article from "../../models/Article.js";
 import { generateSortType, globalUtils } from "../../utils/index.js";
 
 
-// create post
-export const createPostService = async (
+// create Article
+export const createArticleService = async (
     {title = '' ,
     body = '',
     cover = '',
@@ -12,8 +11,8 @@ export const createPostService = async (
     categoryId = '', 
     authorId = '',
    }) => {
-    // create new instance of post
-    const article = new Post();
+    // create new instance of Article
+    const article = new Article();
     article.title = title
     article.slug  = globalUtils.generateSlug(title)
     article.body  = body
@@ -28,14 +27,14 @@ export const createPostService = async (
 
 
 
-// count post
-export const countPostsService = (filter) => {
-    return Post.count(filter);
+// count Article
+export const countArticlesService = (filter) => {
+    return Article.count(filter);
 }
 
 
-// find all posts
-export const findAllPostService = async (
+// find all Articles
+export const findAllArticleService = async (
     {search='',sortBy='updatedAt',sortType='asc',limit=10,page=1,categoryId='',author='' , select=''}
 ) => {
     // populate sortType val for query
@@ -55,7 +54,7 @@ export const findAllPostService = async (
     if(author) filter.authorId = author
 
     // send request to db with all query params
-    let articles = await Post.find(filter)
+    let articles = await Article.find(filter)
     .select(selectedArray)
     .sort({[sortBy] : sortTypeForDB})
     .skip(page * limit - limit)
@@ -67,8 +66,8 @@ export const findAllPostService = async (
     } : '');
 
 
-    // count total posts based on search query params only, not apply on pagination
-    let totalItems = await countPostsService(filter) ;
+    // count total Articles based on search query params only, not apply on pagination
+    let totalItems = await countArticlesService(filter) ;
 
     return {
         articles,
@@ -82,7 +81,7 @@ export const findAllPostService = async (
 export const findById = async ({id = '' , expand = [] , select=[]}) => {
     if(!id) throw new Error('Invalid Id Params!')
 
-    let article = Post.findById(id);
+    let article = Article.findById(id);
     if(select.length > 0) article =  await article.select(select);
 
 
@@ -92,7 +91,6 @@ export const findById = async ({id = '' , expand = [] , select=[]}) => {
         if(expand.includes('comments')) await article.populate({path : 'comments'})
     }
     
-
     return article ? article._doc : null;
 }
 

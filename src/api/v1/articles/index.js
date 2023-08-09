@@ -1,6 +1,10 @@
 
-import createPost from './controller/create.js';
+import createArticle from './controller/create.js';
+import { findAll } from './controller/findAll.js';
+import { find } from './controller/find.js';
 
-export {
-    createPost,
+export default {
+    createArticle,
+    findAll,
+    find
 }

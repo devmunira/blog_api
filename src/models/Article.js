@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const postSchema = new Schema({
+const ArticleSchema = new Schema({
     authorId : {
         type: Schema.Types.ObjectId,
         ref : 'User',
@@ -39,7 +39,7 @@ const postSchema = new Schema({
 },{timestamps : true})
 
 
-postSchema.statics.findByTitleOrBody = function(val){
+ArticleSchema.statics.findByTitleOrBody = function(val){
     // if(val){
         return this.find({title : val})
     // }
@@ -47,5 +47,5 @@ postSchema.statics.findByTitleOrBody = function(val){
 }
 
 
-const Post = model('Post' , postSchema)
-export default Post;
+const Article = model('Article' , ArticleSchema)
+export default Article;

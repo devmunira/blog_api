@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import User from '../../models/User.js';
-import Post from '../../models/Post.js';
+import Article from '../../models/Article.js';
 
 // Seed numOfUser User Data to User Documents
 export const userSeeder = async (numOfUser) => {
@@ -19,15 +19,15 @@ export const userSeeder = async (numOfUser) => {
     console.log('User Created Successfully!')
 }
 
-// Seed Post 
-export const postSeeder = async (num) => {
-    console.log('Post Creating........')
+// Seed Article 
+export const ArticleSeeder = async (num) => {
+    console.log('Article Creating........')
     for(let i = 0 ; i <= num ; i++){
         const count = await User.countDocuments();
         const randomIndex = Math.floor(Math.random() * count);
         const randomUser = await User.findOne().skip(randomIndex);
 
-        const post  = new Post({
+        const Article  = new Article({
             title : faker.person.fullName(),
             body  : faker.lorem.word(100),
             userId : randomUser._id,
@@ -35,12 +35,12 @@ export const postSeeder = async (num) => {
             categoryId : randomUser._id,
         })
 
-       post.slug = post.title.toLowerCase().replace(' ' , '-')
-       await post.save()
+       Article.slug = Article.title.toLowerCase().replace(' ' , '-')
+       await Article.save()
     }
 
-    // await Post.deleteMany()
-    console.log('Post Created Successfully!')
+    // await Article.deleteMany()
+    console.log('Article Created Successfully!')
 }
 
 

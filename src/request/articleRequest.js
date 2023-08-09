@@ -1,5 +1,5 @@
 import { body, query } from "express-validator";
-import Post from "../models/Post.js";
+import Article from "../models/Article.js";
 
 
 const isSortType = (val,array=['asc' ,'desc']) => {
@@ -19,7 +19,7 @@ const isStatusType = (val, array=['publish' , 'unpublish' , 'draft']) => {
 
 
 // Find All Query params check
-export const getPostRequest = [
+export const getArticleRequest = [
     query('page')
     .optional()
     .isInt()
@@ -42,8 +42,8 @@ export const getPostRequest = [
 ];
 
 
-// create new post query params check
-export const createPostRequest = [
+// create new Article query params check
+export const createArticleRequest = [
     body('title')
     .trim()
     .notEmpty()
@@ -53,8 +53,8 @@ export const createPostRequest = [
     .withMessage('Tilte must not be greater than 50 chars!')
     .bail()
     .custom(async val => {
-        const posts = await Post.find({title : {$regex: val, $options: 'i'}}).exec()
-        if(posts.length > 0) return Promise.reject('Title must be unique!')
+        const Articles = await Article.find({title : {$regex: val, $options: 'i'}}).exec()
+        if(Articles.length > 0) return Promise.reject('Title must be unique!')
         return true;
     })
     ,
@@ -66,7 +66,7 @@ export const createPostRequest = [
     .optional()
     .trim()
     .isString()
-    .withMessage('Post details must be a string type!')
+    .withMessage('Article details must be a string type!')
     ,
     body('cover')
     .optional()

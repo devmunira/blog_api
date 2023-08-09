@@ -1,12 +1,12 @@
 import express from "express"
 import authRoute from "./AuthRoute.js"
-import postRoute from "./PostRoute.js"
+import ArticleRoute from "./ArticleRoute.js"
 
 const router = express.Router();
 
 // All Endpints routes all here
 router.use('/auth' , authRoute)
-router.use('/articles' , postRoute)
+router.use('/articles' , ArticleRoute)
 
 
 // Checkout API Route Health
